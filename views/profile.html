@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="timeline">
+    <div class="followings half">
+      <h2>팔로잉 목록</h2>
+      {% if user.Followings %}
+        {% for following in user.Followings %}
+          <div>
+            {{following.nick}}&emsp;
+            <input type="hidden" value="{{following.id}}" class="twit-user-id">
+            <button class="twit-stopFollow twit-button">팔로잉 끊기</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="followers half">
+      <h2>팔로워 목록</h2>
+      {% if user.Followers %}
+        {% for follower in user.Followers %}
+          <div>{{follower.nick}}</div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+<script>
+      document.querySelectorAll('.twit-stopFollow').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+          const userId = tag.parentNode.querySelector('.twit-user-id').value;
+            if(confirm('팔로잉을 끊으시겠습니까?')){
+              axios.post(`/user/${userId}/stopFollow`)
+                .then(() => {
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+              }
+            })
+            });
+</script>
+{% endblock %}
